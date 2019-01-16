@@ -1,3 +1,11 @@
+<?php 
+session_start();
+if(isset($_SESSION['user_id']))
+{
+    header("Location: http://localhost:8080");
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -16,12 +24,12 @@
 		    <h2 class="text-center">Login Now</h2>
 		    <form class="login-form">
 			  	<div class="form-group">
-				    <label for="exampleInputEmail1" class="text-uppercase">Username</label>
-				    <input type="text" class="form-control" placeholder="">			    
+				    <label  for="exampleInputEmail1" class="text-uppercase">Username</label>
+				    <input name="username" type="text" class="form-control" placeholder="">			    
 			  	</div>
 			  	<div class="form-group">
 				    <label for="exampleInputPassword1" class="text-uppercase">Password</label>
-				    <input type="password" class="form-control" placeholder="">
+				    <input name="password" type="password" class="form-control" placeholder="">
 			  	</div>  
   
 			    <div class="form-check">

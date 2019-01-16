@@ -20,10 +20,12 @@ if ($conn->connect_error) {
 	if(empty($resultUsers)) {
         $queryUsers = "CREATE TABLE users (
           	id int(11) AUTO_INCREMENT,
-          	email varchar(255) NOT NULL,
+          	first_name varchar(255) NOT NULL,
+          	last_name varchar(255) NOT NULL,
+          	email varchar(255) UNIQUE NOT NULL,
           	password varchar(255) NOT NULL,
-          	confirm_password varchar(255) NOT NULL,
           	phone_number varchar(255) NOT NULL,
+          	user_role varchar(255) NOT NULL DEFAULT 'subscriber',
           	created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
           	PRIMARY KEY  (ID)
         )";

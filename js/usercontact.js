@@ -14,23 +14,41 @@ jQuery(document).ready(function($){
 		var email 			= $.trim($('.register-form input[name="email"]').val());
 		var phone 			= $.trim($('.register-form input[name="phone"]').val());
 		var password        = $.trim($('.register-form input[name="password"]').val());
-		var confirmPassword = $.trim($('.register-form input[name="confirmPassword"]').val());
+		var confirm_password= $.trim($('.register-form input[name="confirmPassword"]').val());
 
-		if(verifyEmailAddress(email) && email != '' && phone != '' && password != '' && confirmPassword != '' && password === confirmPassword){
+		if(verifyEmailAddress(email) && email != '' && phone != '' && password != '' && confirm_password != '' && password === confirm_password){
 			$.ajax({
 			 	method: "POST",
 			  	url: "http://localhost:8080/ajax.php",
-			  	beforeSend: function( xhr ) {},		  
+			  	beforeSend: function( xhr ) {
+			  		$('.btn-login img').fadeIn();
+			  	},		  
 		  		data: { 
-		  		  	name: "John", 
-		  		  	location: "Boston" ,
+		  		  	first_name: fname, 
+		  		  	last_name: lname, 
+		  		  	email: email,
+		  		  	phone_number:phone,
+		  		  	password:password,
+		  		  	confirm_password:confirm_password,
 		  		  	action:'register'
 		  		}
 			})
 			.done(function( data ) {
-			    if ( data ) {
-			      console.log( data );
+				d = JSON.parse(data);
+			    if ( d.status == 'false' ) {
+			      	$('.ajax-message').text(d.message);
+			    }else{
+			    	$('.ajax-message').text('');
+			    	$('.success-message').text(d.message);
+			    	$('.success-message').fadeIn();
+			    	setTimeout(function(){
+			    		$('.success-message').fadeOut();
+			    	}, 5000);
+			    	$('input').removeClass('errorInput');
 			    }
+			    $('.btn-login img').fadeOut();
+			    $('.errorConfirm').fadeOut();
+			    $('.errorTxt').fadeOut();
 			});
 		}else{
 			$('.register-form input[required="required"]').each(function(){
@@ -62,16 +80,19 @@ jQuery(document).ready(function($){
 	});
 
 	/*Login Ajax Request*/
-	$('.login-block button[type="submit"]').click(function(e){
+	$('.login-form button[type="submit"]').click(function(e){
 		e.preventDefault();
+
+		var username = $('.login-form input[name="username"]').val();
+		var password = $('.login-form input[name="password"]').val();
 
 		$.ajax({
 			 	method: "POST",
 			  	url: "http://localhost:8080/ajax.php",
 			  	beforeSend: function( xhr ) {},		  
 		  		data: { 
-		  		  	name: "John", 
-		  		  	location: "Boston" ,
+		  		  	username: username, 
+		  		  	password:password,
 		  		  	action:'login'
 		  		}
 			})
@@ -80,6 +101,27 @@ jQuery(document).ready(function($){
 			      console.log( data );
 			    }
 			});
-
 	});
+
+
+	/*Ajax Request For Deleting User*/
+	$('.delete-sign').click(function(){
+		var user_id = $(this).data('id');
+
+		$.ajax({
+			 	method: "POST",
+			  	url: "http://localhost:8080/ajax.php",	  
+		  		data: { 
+		  		  	user_id: user_id, 
+		  		  	action:'delete'
+		  		}
+			})
+			.done(function( data ) {
+			    if ( data ) {
+			      console.log( data );
+			    }
+			});
+	});
+
+
 });

@@ -1,54 +1,87 @@
 <?php 
 
+
 /**
  * 
  */
 class User
 {
-	protected $firstName;
-	protected $lastName;
-	protected $email;
-	protected $phoneNumber;
-	protected $password;
-	protected $confirmPassword;
+	public $email;
+	public $first_name;
+	public $last_name;	
+	public $phone_number;
+	public $password;
 
 	
-	function __construct($firstName,$lastName,$email,$phoneNumber,$password,$confirmPassword)
+	function __construct($first_name, $last_name, $email, $password, $phone_number)
 	{
+		$this->first_name 		= $first_name;
+		$this->last_name 		= $last_name;
 		$this->email 			= $email;
-		$this->lastName 		= $lastName;
-		$this->firstName 		= $firstName;
-		$this->password 		= $password;
-		$this->confirmPassword  = $confirmPassword;
+		$this->password 		= password_hash($password, PASSWORD_DEFAULT);
+		$this->phone_number		= $phone_number;
 	}
 
-	public function createUser()
+	public function save()
 	{
+		$servername = "localhost";
+		$username = "admin";
+		$password = "f!8*DNmysql";
+		$db = 'contacts';
 
+		// Create connection
+		$conn = mysqli_connect( $servername, $username, $password, $db);
+
+		$sql = "INSERT INTO users (first_name, last_name, email, password, phone_number)
+		VALUES ('{$this->first_name}', '{$this->last_name}', '{$this->email}', '{$this->password}', '{$this->phone_number}')";
+
+		if ($conn->query($sql) === TRUE) {
+			die(json_encode(array('status'=>'true', 'message'=>'Thank you for your registration
+				')));
+		} else {
+			die(json_encode(array('status'=>'false', 'message'=>'Email already exists in our DB')));
+		}
+		$conn->close();		
+	}
+
+	public function delete($id)
+	{
+			
 	}
 }
 
 /**
  * 
  */
-class Favorites
+class Auth
 {
-	
-	function __construct(argument)
-	{
-		# code...
-	}
-}
+	public $username;
+	public $password;
 
-/**
- * 
- */
-class Messaqes
-{
-	
-	function __construct(argument)
+	function __construct($username, $password)
 	{
-		# code...
+		$this->username = $username;
+		$this->password = $password;
+	}
+
+	public function getUser()
+	{
+		$servername = "localhost";
+		$username 	= "admin";
+		$password 	= "f!8*DNmysql";
+		$db 		= 'contacts';
+
+		// Create connection
+		$conn = mysqli_connect( $servername, $username, $password, $db);
+
+		$row    = mysqli_fetch_row($result);
+
+		if (!empty($row) && password_verify ($this->password, $row[0])) {
+			return $row[1];
+		} else {
+			return false;
+		}
+		$conn->close();		
 	}
 }
 
